@@ -6,17 +6,18 @@
 ## setMatInv : sets the Inverse of the matrix
 
 makeCacheMatrix <- function(x = matrix()) {
-  invertedMatrix <- NULL
-  getMatrix <- function() x
-  setMatrix <- function(y) x <- y
-  getMatInv <- function() {
-    invertedMatrix
+  i <- NULL
+  set <- function(y) {
+    x <<- y
+    i <<- NULL
   }
-  setMatInv <- function(InvMat) {
-    invertedMatrix <<- InvMat
-  }
-  list(getMatrix=getMatrix,setMatrix=setMatrix,getMatInv=getMatInv
-       ,setMatInv=setMatInv)
+  get <- function() x
+  setinverse <- function(inverse) i <<- inverse
+  getinverse <- function() i
+  list(set = set,
+       get = get,
+       setinverse = setinverse,
+       getinverse = getinverse)
 }
 
 
@@ -28,14 +29,16 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {  
  
-  if(!is.null(x$getMatInv())) {
-    print("Fetching the inverse from the cache...")
-    return(x$getMatInv())
+  i <- x$getinverse()
+  if (!is.null(i)) {
+    message("getting cached data...")
+    return(i)
   }
-  else{
-    print("Calculating the inverse & caching the result...")
+  else {
+    message("calculating the inverse & caching the result...")
   }
-    invertedMat <- solve(x$getMatrix())
-    x$setMatInv(invertedMat)
-    invertedMat
+  data <- x$get()
+  i <- solve(data, ...)
+  x$setinverse(i)
+  i
 }
